@@ -26,6 +26,8 @@ int rc4_setup_key(const void* key, int bits) {
     return 0;
 }
 
+void rc4_begin_gen(void) {} /* no cipher is required for this */
+
 void rc4_take_gamma(void* dest, size_t count) {
     rc4_byte_t* dst = dest;
     while (count --> 0) {

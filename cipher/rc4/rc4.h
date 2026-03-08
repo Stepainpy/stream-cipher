@@ -14,6 +14,8 @@
 
 int rc4_setup_key(const void* key, int key_bits);
 
+void rc4_begin_gen(void);
+
 void rc4_take_gamma(void* dest, size_t count);
 void rc4_skip_gamma(            size_t count);
 

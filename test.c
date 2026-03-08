@@ -17,6 +17,7 @@
                                                          \
     printf("- Set key with %3i bits ... ", keysz);       \
     puts(name##_setup_key(key, keysz) == 0 ? OK : FAIL); \
+    name##_begin_gen();                                  \
                                                          \
     if (skip > 0) {                                      \
         printf("- Skiping %i bytes\n", skip);            \
