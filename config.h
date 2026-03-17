@@ -16,6 +16,29 @@
 #  error Unsupported compiler
 #endif
 
+/* Detecting endianness */
+
+#if STMCPHR_ON_GNUC
+#  if defined(__BYTE_ORDER__)
+#    if   __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#      define STMCPHR_IS_LITTLE 1
+#      define STMCPHR_IS_BIG    0
+#    elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#      define STMCPHR_IS_LITTLE 0
+#      define STMCPHR_IS_BIG    1
+#    else
+#      error Unknown endianness
+#    endif
+#  else
+#    error Not defined __BYTE_ORDER__
+#  endif
+#elif STMCPHR_ON_MSVC
+#  define STMCPHR_IS_LITTLE 1
+#  define STMCPHR_IS_BIG    0
+#else
+#  error Unsupported compiler
+#endif
+
 /* Turning off warning "-Wlong-long" on GNUC */
 
 #if STMCPHR_ON_GNUC && __STDC_VERSION__ < 199901L
@@ -80,28 +103,51 @@ typedef unsigned __int64 stmcphr_u64_t;
 #  error Unsupported compiler
 #endif
 
-/* Detecting endianness */
+/* If condition for preprocessor */
 
-#if STMCPHR_ON_GNUC
-#  if defined(__BYTE_ORDER__)
-#    if   __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#      define STMCPHR_IS_LITTLE 1
-#      define STMCPHR_IS_BIG    0
-#    elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-#      define STMCPHR_IS_LITTLE 0
-#      define STMCPHR_IS_BIG    1
-#    else
-#      error Unknown endianness
-#    endif
-#  else
-#    error Not defined __BYTE_ORDER__
-#  endif
-#elif STMCPHR_ON_MSVC
-#  define STMCPHR_IS_LITTLE 1
-#  define STMCPHR_IS_BIG    0
-#else
-#  error Unsupported compiler
-#endif
+#define STMCPHR_CONCAT_(left, right) left ## right
+#define STMCPHR_CONCAT(left, right) STMCPHR_CONCAT_(left, right)
+
+#define STMCPHR_IF_0(stmt)
+#define STMCPHR_IF_1(stmt) stmt
+#define STMCPHR_IF(cond, stmt) STMCPHR_CONCAT(STMCPHR_IF_, cond)(stmt)
+
+#define STMCPHR_IF_LITTLE(stmt) STMCPHR_IF(STMCPHR_IS_LITTLE, stmt)
+#define STMCPHR_IF_BIG(stmt) STMCPHR_IF(STMCPHR_IS_BIG, stmt)
+
+/* Byte swapping one, pair and blocks */
+
+#define STMCPHR_BSWAP_B_STMT_1(bits, array) \
+    (array)[0] = stmcphr_bswap##bits((array)[0]);
+#define STMCPHR_BSWAP_B_STMT_2(bits, array) \
+    STMCPHR_BSWAP_B_STMT_1(bits, array)     \
+    (array)[1] = stmcphr_bswap##bits((array)[1]);
+#define STMCPHR_BSWAP_B_STMT_3(bits, array) \
+    STMCPHR_BSWAP_B_STMT_2(bits, array)     \
+    (array)[2] = stmcphr_bswap##bits((array)[2]);
+#define STMCPHR_BSWAP_B_STMT_4(bits, array) \
+    STMCPHR_BSWAP_B_STMT_3(bits, array)     \
+    (array)[3] = stmcphr_bswap##bits((array)[3]);
+#define STMCPHR_BSWAP_B_STMT_5(bits, array) \
+    STMCPHR_BSWAP_B_STMT_4(bits, array)     \
+    (array)[4] = stmcphr_bswap##bits((array)[4]);
+#define STMCPHR_BSWAP_B_STMT_6(bits, array) \
+    STMCPHR_BSWAP_B_STMT_5(bits, array)     \
+    (array)[5] = stmcphr_bswap##bits((array)[5]);
+#define STMCPHR_BSWAP_B_STMT_7(bits, array) \
+    STMCPHR_BSWAP_B_STMT_6(bits, array)     \
+    (array)[6] = stmcphr_bswap##bits((array)[6]);
+#define STMCPHR_BSWAP_B_STMT_8(bits, array) \
+    STMCPHR_BSWAP_B_STMT_7(bits, array)     \
+    (array)[7] = stmcphr_bswap##bits((array)[7]);
+
+#define STMCPHR_BSWAP_B_ONE(bits, value) do { \
+    (value) = stmcphr_bswap##bits(value); \
+} while (0)
+
+#define STMCPHR_BSWAP_BxN(number, bits, array) do { \
+    stmcphr_bswap_b_stmt_##number(bits, array) \
+} while (0)
 
 /* Bit rotation functions */
 
