@@ -1,7 +1,7 @@
 #ifndef STREAM_CIPHER_CONFIG_H
 #define STREAM_CIPHER_CONFIG_H
 
-/* Compiler detection */
+/* Detecting compiler */
 
 #if defined(__GNUC__)
 #  define STMCPHR_ON_GNUC 1

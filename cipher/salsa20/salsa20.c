@@ -17,33 +17,15 @@ static struct {
 
 int salsa20_setup_key(const void* key, int bits) {
     if (bits != 256) return 1;
-
     memcpy(salsa20i_ctx.key, key, sizeof salsa20i_ctx.key);
     STMCPHR_IF_BIG(STMCPHR_BSWAP_32x8(salsa20i_ctx.key));
-/* #if STMCPHR_IS_BIG
-    salsa20i_ctx.key[0] = stmcphr_bswap32(salsa20i_ctx.key[0]);
-    salsa20i_ctx.key[1] = stmcphr_bswap32(salsa20i_ctx.key[1]);
-    salsa20i_ctx.key[2] = stmcphr_bswap32(salsa20i_ctx.key[2]);
-    salsa20i_ctx.key[3] = stmcphr_bswap32(salsa20i_ctx.key[3]);
-    salsa20i_ctx.key[4] = stmcphr_bswap32(salsa20i_ctx.key[4]);
-    salsa20i_ctx.key[5] = stmcphr_bswap32(salsa20i_ctx.key[5]);
-    salsa20i_ctx.key[6] = stmcphr_bswap32(salsa20i_ctx.key[6]);
-    salsa20i_ctx.key[7] = stmcphr_bswap32(salsa20i_ctx.key[7]);
-#endif */
-
     return 0;
 }
 
 int salsa20_setup_nonce(const void* nonce, int bits) {
     if (bits != 64) return 1;
-
     memcpy(salsa20i_ctx.nonce, nonce, sizeof salsa20i_ctx.nonce);
     STMCPHR_IF_BIG(STMCPHR_BSWAP_32x2(salsa20i_ctx.nonce));
-/* #if STMCPHR_IS_BIG
-    salsa20i_ctx.nonce[0] = stmcphr_bswap32(salsa20i_ctx.nonce[0]);
-    salsa20i_ctx.nonce[1] = stmcphr_bswap32(salsa20i_ctx.nonce[1]);
-#endif */
-
     return 0;
 }
 
@@ -51,10 +33,6 @@ int salsa20_setup_block(size_t number) {
     memset(salsa20i_ctx.block, 0, sizeof salsa20i_ctx.block);
     memcpy(salsa20i_ctx.block, &number, sizeof number);
     STMCPHR_IF_BIG(STMCPHR_BSWAP_32x2(salsa20i_ctx.block));
-/* #if STMCPHR_IS_BIG
-    salsa20i_ctx.block[0] = stmcphr_bswap32(salsa20i_ctx.block[0]);
-    salsa20i_ctx.block[1] = stmcphr_bswap32(salsa20i_ctx.block[1]);
-#endif */
     return 0;
 }
 
@@ -98,9 +76,6 @@ void salsa20_begin_gen(void) {
     salsa20i_ctx.remained = sizeof salsa20i_ctx.gamma;
     for (i = 0; i < 16; i++) {
         STMCPHR_IF_BIG(STMCPHR_BSWAP_32_ONE(M[i]));
-/* #if STMCPHR_IS_BIG
-        M[i] = stmcphr_bswap32(M[i]);
-#endif */
         memcpy(salsa20i_ctx.gamma + 4 * i, M + i, 4);
     }
 }

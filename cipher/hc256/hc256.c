@@ -18,39 +18,15 @@ static struct {
 
 int hc256_setup_key(const void* key, int bits) {
     if (bits != 256) return 1;
-
     memcpy(hc256i_ctx.key, key, sizeof hc256i_ctx.key);
     STMCPHR_IF_BIG(STMCPHR_BSWAP_32x8(hc256i_ctx.key));
-/* #if STMCPHR_IS_BIG
-    hc256i_ctx.key[0] = stmcphr_bswap32(hc256i_ctx.key[0]);
-    hc256i_ctx.key[1] = stmcphr_bswap32(hc256i_ctx.key[1]);
-    hc256i_ctx.key[2] = stmcphr_bswap32(hc256i_ctx.key[2]);
-    hc256i_ctx.key[3] = stmcphr_bswap32(hc256i_ctx.key[3]);
-    hc256i_ctx.key[4] = stmcphr_bswap32(hc256i_ctx.key[4]);
-    hc256i_ctx.key[5] = stmcphr_bswap32(hc256i_ctx.key[5]);
-    hc256i_ctx.key[6] = stmcphr_bswap32(hc256i_ctx.key[6]);
-    hc256i_ctx.key[7] = stmcphr_bswap32(hc256i_ctx.key[7]);
-#endif */
-
     return 0;
 }
 
 int hc256_setup_nonce(const void* nonce, int bits) {
     if (bits != 256) return 1;
-
     memcpy(hc256i_ctx.nonce, nonce, sizeof hc256i_ctx.nonce);
     STMCPHR_IF_BIG(STMCPHR_BSWAP_32x8(hc256i_ctx.nonce));
-/* #if STMCPHR_IS_BIG
-    hc256i_ctx.nonce[0] = stmcphr_bswap32(hc256i_ctx.nonce[0]);
-    hc256i_ctx.nonce[1] = stmcphr_bswap32(hc256i_ctx.nonce[1]);
-    hc256i_ctx.nonce[2] = stmcphr_bswap32(hc256i_ctx.nonce[2]);
-    hc256i_ctx.nonce[3] = stmcphr_bswap32(hc256i_ctx.nonce[3]);
-    hc256i_ctx.nonce[4] = stmcphr_bswap32(hc256i_ctx.nonce[4]);
-    hc256i_ctx.nonce[5] = stmcphr_bswap32(hc256i_ctx.nonce[5]);
-    hc256i_ctx.nonce[6] = stmcphr_bswap32(hc256i_ctx.nonce[6]);
-    hc256i_ctx.nonce[7] = stmcphr_bswap32(hc256i_ctx.nonce[7]);
-#endif */
-
     return 0;
 }
 
@@ -95,9 +71,6 @@ static void hc256i_round(void) {
             + hc256i_g1(hc256i_ctx.P[(i - 3) & 1023], hc256i_ctx.P[(i + 1) & 1023]);
         S = hc256i_h1(hc256i_ctx.P[(i - 12) & 1023]) ^ hc256i_ctx.P[i];
         STMCPHR_IF_BIG(STMCPHR_BSWAP_32_ONE(S));
-/* #if STMCPHR_IS_BIG
-        S = stmcphr_bswap32(S);
-#endif */
         memcpy(hc256i_ctx.gamma + 4 * i, &S, sizeof S);
     }
     for (i = 0; i < 1024; i++) {
@@ -105,9 +78,6 @@ static void hc256i_round(void) {
             + hc256i_g2(hc256i_ctx.Q[(i - 3) & 1023], hc256i_ctx.Q[(i + 1) & 1023]);
         S = hc256i_h2(hc256i_ctx.Q[(i - 12) & 1023]) ^ hc256i_ctx.Q[i];
         STMCPHR_IF_BIG(STMCPHR_BSWAP_32_ONE(S));
-/* #if STMCPHR_IS_BIG
-        S = stmcphr_bswap32(S);
-#endif */
         memcpy(hc256i_ctx.gamma + 4 * i + 4096, &S, sizeof S);
     }
 }
