@@ -12,7 +12,8 @@
 
 #include <stddef.h>
 
-int rc4_setup_key(const void* key, int key_bits);
+int rc4_setup_key  (const void* key  , int   key_bits);
+int rc4_setup_nonce(const void* nonce, int nonce_bits);
 
 void rc4_begin_gen(void);
 
