@@ -92,7 +92,7 @@ void salsa20_begin_gen(void) {
     for (i = 0; i < 2; i++) M[i +  8] += salsa20i_ctx.block[i];
     for (i = 0; i < 4; i++) M[i + 11] += salsa20i_ctx.key[i + 4];
 
-    salsa20i_ctx.remained = 64;
+    salsa20i_ctx.remained = sizeof salsa20i_ctx.gamma;
     for (i = 0; i < 16; i++) {
 #if STMCPHR_IS_BIG
         M[i] = stmcphr_bswap32(M[i]);
@@ -106,7 +106,8 @@ void salsa20_take_gamma(void* dest, size_t count) {
     while (count > 0) {
         min = count < salsa20i_ctx.remained
             ? count : salsa20i_ctx.remained;
-        memcpy(dst, salsa20i_ctx.gamma + 64 - salsa20i_ctx.remained, min);
+        memcpy(dst, salsa20i_ctx.gamma +
+            sizeof salsa20i_ctx.gamma - salsa20i_ctx.remained, min);
         dst += min; count -= min; salsa20i_ctx.remained -= min;
 
         if (salsa20i_ctx.remained == 0) {

@@ -45,7 +45,7 @@ static void rabbiti_round(void) {
 
 static void rabbiti_load_gamma(void) {
     rabbit_half_t S;
-    rabbiti_ctx.remained = 16;
+    rabbiti_ctx.remained = sizeof rabbiti_ctx.gamma;
 
     S = (rabbiti_ctx.X[6] >> 16) ^ rabbiti_ctx.X[1];
     rabbiti_ctx.gamma[ 0] = (S >> 8) & 0xFF;
@@ -143,7 +143,8 @@ void rabbit_take_gamma(void* dest, size_t count) {
     while (count > 0) {
         min = count < rabbiti_ctx.remained
             ? count : rabbiti_ctx.remained;
-        memcpy(dst, rabbiti_ctx.gamma + 16 - rabbiti_ctx.remained, min);
+        memcpy(dst, rabbiti_ctx.gamma +
+            sizeof rabbiti_ctx.gamma - rabbiti_ctx.remained, min);
         dst += min; count -= min; rabbiti_ctx.remained -= min;
 
         if (rabbiti_ctx.remained == 0) {

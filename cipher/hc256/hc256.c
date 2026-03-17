@@ -86,7 +86,7 @@ static hc256_word_t hc256i_h2(hc256_word_t x) {
 
 static void hc256i_round(void) {
     hc256_word_t S, i;
-    hc256i_ctx.remained = 8192;
+    hc256i_ctx.remained = sizeof hc256i_ctx.gamma;
 
     for (i = 0; i < 1024; i++) {
         hc256i_ctx.P[i] += hc256i_ctx.P[(i - 10) & 1023]
@@ -142,7 +142,8 @@ void hc256_take_gamma(void* dest, size_t count) {
     while (count > 0) {
         min = count < hc256i_ctx.remained
             ? count : hc256i_ctx.remained;
-        memcpy(dst, hc256i_ctx.gamma + 8192 - hc256i_ctx.remained, min);
+        memcpy(dst, hc256i_ctx.gamma +
+            sizeof hc256i_ctx.gamma - hc256i_ctx.remained, min);
         dst += min; count -= min; hc256i_ctx.remained -= min;
 
         if (hc256i_ctx.remained == 0)

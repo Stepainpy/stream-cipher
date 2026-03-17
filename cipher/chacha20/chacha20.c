@@ -87,7 +87,7 @@ void chacha20_begin_gen(void) {
     for (i = 0; i < 8; i++) M[i +  4] += chacha20i_ctx.key[i];
     for (i = 0; i < 3; i++) M[i + 13] += chacha20i_ctx.nonce[i];
 
-    chacha20i_ctx.remained = 64;
+    chacha20i_ctx.remained = sizeof chacha20i_ctx.gamma;
     for (i = 0; i < 16; i++) {
 #if STMCPHR_IS_BIG
         M[i] = stmcphr_bswap32(M[i]);
@@ -101,7 +101,8 @@ void chacha20_take_gamma(void* dest, size_t count) {
     while (count > 0) {
         min = count < chacha20i_ctx.remained
             ? count : chacha20i_ctx.remained;
-        memcpy(dst, chacha20i_ctx.gamma + 64 - chacha20i_ctx.remained, min);
+        memcpy(dst, chacha20i_ctx.gamma +
+            sizeof chacha20i_ctx.gamma - chacha20i_ctx.remained, min);
         dst += min; count -= min; chacha20i_ctx.remained -= min;
 
         if (chacha20i_ctx.remained == 0) {
