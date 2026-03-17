@@ -19,7 +19,8 @@ int chacha20_setup_key(const void* key, int bits) {
     if (bits != 256) return 1;
 
     memcpy(chacha20i_ctx.key, key, sizeof chacha20i_ctx.key);
-#if STMCPHR_IS_BIG
+    STMCPHR_IF_BIG(STMCPHR_BSWAP_32x8(chacha20i_ctx.key));
+/* #if STMCPHR_IS_BIG
     chacha20i_ctx.key[0] = stmcphr_bswap32(chacha20i_ctx.key[0]);
     chacha20i_ctx.key[1] = stmcphr_bswap32(chacha20i_ctx.key[1]);
     chacha20i_ctx.key[2] = stmcphr_bswap32(chacha20i_ctx.key[2]);
@@ -28,7 +29,7 @@ int chacha20_setup_key(const void* key, int bits) {
     chacha20i_ctx.key[5] = stmcphr_bswap32(chacha20i_ctx.key[5]);
     chacha20i_ctx.key[6] = stmcphr_bswap32(chacha20i_ctx.key[6]);
     chacha20i_ctx.key[7] = stmcphr_bswap32(chacha20i_ctx.key[7]);
-#endif
+#endif */
 
     return 0;
 }
@@ -37,11 +38,12 @@ int chacha20_setup_nonce(const void* nonce, int bits) {
     if (bits != 96) return 1;
 
     memcpy(chacha20i_ctx.nonce, nonce, sizeof chacha20i_ctx.nonce);
-#if STMCPHR_IS_BIG
+    STMCPHR_IF_BIG(STMCPHR_BSWAP_32x3(chacha20i_ctx.nonce));
+/* #if STMCPHR_IS_BIG
     chacha20i_ctx.nonce[0] = stmcphr_bswap32(chacha20i_ctx.nonce[0]);
     chacha20i_ctx.nonce[1] = stmcphr_bswap32(chacha20i_ctx.nonce[1]);
     chacha20i_ctx.nonce[2] = stmcphr_bswap32(chacha20i_ctx.nonce[2]);
-#endif
+#endif */
 
     return 0;
 }
@@ -89,9 +91,10 @@ void chacha20_begin_gen(void) {
 
     chacha20i_ctx.remained = sizeof chacha20i_ctx.gamma;
     for (i = 0; i < 16; i++) {
-#if STMCPHR_IS_BIG
+        STMCPHR_IF_BIG(STMCPHR_BSWAP_32_ONE(M[i]));
+/* #if STMCPHR_IS_BIG
         M[i] = stmcphr_bswap32(M[i]);
-#endif
+#endif */
         memcpy(chacha20i_ctx.gamma + 4 * i, M + i, 4);
     }
 }

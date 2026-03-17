@@ -146,8 +146,13 @@ typedef unsigned __int64 stmcphr_u64_t;
 } while (0)
 
 #define STMCPHR_BSWAP_BxN(number, bits, array) do { \
-    stmcphr_bswap_b_stmt_##number(bits, array) \
+    STMCPHR_BSWAP_B_STMT_##number(bits, array) \
 } while (0)
+
+#define STMCPHR_BSWAP_32_ONE(value) STMCPHR_BSWAP_B_ONE(32, value)
+#define STMCPHR_BSWAP_32x2(array) STMCPHR_BSWAP_BxN(2, 32, array)
+#define STMCPHR_BSWAP_32x3(array) STMCPHR_BSWAP_BxN(3, 32, array)
+#define STMCPHR_BSWAP_32x8(array) STMCPHR_BSWAP_BxN(8, 32, array)
 
 /* Bit rotation functions */
 
